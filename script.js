@@ -5009,7 +5009,6 @@ setInterval(checkSTJNotification, 2000);
 const daftarKendaraan = [
 
 "JBI-05 BH 8578 NA",
-"JBI-06 BH 8589 NA",
 "JBI-07 BH 8582 NA",
 "JBI-08 BH 8629 NA",
 "JBI-09 BH 8610 NA",
