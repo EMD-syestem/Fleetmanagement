@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Fleet Management</title>
+    <link rel="stylesheet" href="./style.css">
+
+  </head>
+    
+  <body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Control Vehicle Timesheet Form</title>
+
+</head>
+
+<body>
+
+  <!-- ===== LOGIN PAGE ===== -->
+  <div id="loginPage">
+    <!-- 🔹 Sisi kiri (Wallpaper & Branding) -->
+    <div class="login-wallpaper">
+      <div class="overlay"></div>
+      <div class="branding">
+        <h1>Efficiency<br><span>Monitoring System</span></h1>
+        <p>Smart Dashboard for Driver overtime control</p>
+      </div>
+    </div>
+
+    <!-- 🔹 Sisi kanan (Form Login) -->
+    <div class="login-card">
+      <div class="login-header">
+        <img src="https://i.postimg.cc/25jBDZrH/GS-dispacer-removebg-preview.png" alt="Logo" class="login-logo" />
+        <h2>Welcome Back Admin</h2>
+        <p class="login-subtitle">Silakan masuk untuk melanjutkan</p>
+      </div>
+
+      <form onsubmit="event.preventDefault(); login();">
+        <input type="text" id="loginEmail" placeholder="Email" required />
+        <input type="password" id="loginPassword" placeholder="Password" required />
+        <button type="button" onclick="login()">Login</button>
+        <div class="login-error" id="loginError"></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="dashboard-container">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <div class="sidebar">
+
+      <div class="sidebar-logo">
+        <img src="https://i.postimg.cc/NMRDPgT5/GS-dispacer.jpg" alt="Logo">
+      </div>
+
+      <div class="logo">
+        MENU PANEL
+      </div>
+
+      <!-- ================= TIMESHEET ================= -->
+
+      <div class="menu-box">
+
+        <div class="menu-box-title">
+          TIMESHEET & REPORT
+        </div>
+
+        <ul class="menu">
+
+          <li id="adminDashboardMenu" style="display:none;">
+            <a href="https://emd-syestem.github.io/Dasboard_Overtime/" target="_blank">
+              Dashboard Driver
+            </a>
+          </li>
+
+          <li>
+            <a href="#" onclick="showSection('formSection')">
+              ⏺️ Input Timesheet
+            </a>
+          </li>
+
+          <li>
+            <a href="#" onclick="showSection('reportSection')">
+              Daily Overtime Report
+            </a>
+          </li>
+
+          <li>
+            <a href="#" onclick="showSection('monthlyReportSection')">
+              Monthly Report
+            </a>
+          </li>
+
+          <li>
+            <a href="#" onclick="showSection('driverMatrixSection')">
+              Driver Attendance Sheet
+            </a>
+          </li>
+
+          <li>
+            <a href="#" onclick="showSection('chartSection')">
+              Overtime Chart
+            </a>
+          </li>
+
+          <li>
+            <a href="#" onclick="showSection('driverChartSection')">
+              Driver Chart
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+
+      <!-- ================= DINAS LUAR ================= -->
+
+      <div class="menu-box">
+
+        <div class="menu-box-title">
+          DINAS LUAR
+        </div>
+
+        <ul class="menu">
+
+          <li>
+            <a href="#" onclick="showSection('dinasLuarSection')">
+              ⏺️ Input Dinas Luar
+            </a>
+          </li>
+
+          <li>
+            <a href="#" onclick="showSection('reportDinasLuarSection')">
+              Report Dinas Luar
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+
+      <!-- ================= STJ ================= -->
+
+      <div class="menu-box">
+
+        <div class="menu-box-title">
+          SURAT TUGAS JALAN (STJ)
+        </div>
+
+        <ul class="menu">
+
+          <li>
+            <a href="#" onclick="showSection('reportSTJSection')">
+              Report Surat Tugas Jalan
+
+              <span id="stjNotif" class="notif-badge"></span>
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+
+    </div>
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <div class="main-content">
+
+      <div class="header">
+
+        <!-- ================= HEADER LEFT ================= -->
+
+        <div class="header-left">
+
+          <h1>
+            Fleet Management & General Service Control
+          </h1>
+
+          <!-- ================= LINKS ================= -->
+
+          <div class="header-links">
+
+            <a href="https://web.arvento.com/home.aspx" target="_blank">
+              Arvento web
+            </a>
+
+            <a href="https://emd-syestem.github.io/Pertamina-projeck/" target="_blank">
+              Form Input Job report
+            </a>
+
+            <a href="https://emd-syestem.github.io/Form-input--bbm/" target="_blank">
+              Form Input BBM
+            </a>
+
+          </div>
+
+        </div>
+
+        <!-- ================= USER INFO ================= -->
+
+        <div class="user-info">
+
+          <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="user" id="userPhoto">
+
+          <span id="loggedInUser">
+            Guest
+          </span>
+
+          <button class="logout-btn" onclick="logout()">
+            Logout
+          </button>
+
+        </div>
+
+      </div>
+      <!-- ================= FORM ================= -->
+
+      <div id="formSection">
+
+        <div class="form-container" id="formContainer">
+
+          <h3 style="color:white;">
+            Control Driver Overtime Form
+          </h3>
+
+          <div class="form-row">
+
+            <div class="form-group">
+
+              <label for="namaDriver">
+                Nama Driver:
+              </label>
+
+              <select id="namaDriver" required>
+
+                <option value="" disabled selected>
+                  Nama Driver
+                </option>
+                <!-- ================= KRP FIELD ================= -->
+
+                <option class="krp-field" value="Aang Septiansyah">Aang Septiansyah</option>
+                <option class="krp-field" value="Ade Trio Saputra">Ade Trio Saputra</option>
+                <option class="krp-field" value="Ahmad Safii">Ahmad Safii</option>
+                <option class="krp-field" value="Andi Susilo">Andi Susilo</option>
+                <option class="krp-field" value="Andrian Abel Pratama">Andrian Abel Pratama</option>
+                <option class="krp-field" value="Bayu Hermansyah">Bayu Hermansyah</option>
+                <option class="krp-field" value="Cristiandi Saputra">Cristiandi Saputra</option>
+                <option class="krp-field" value="Deden krishna">Deden krishna</option>
+                <option class="krp-field" value="Dedi Kurniawan.">Dedi Kurniawan.</option>
+                <option class="krp-field" value="Dimas Anggriawan">Dimas Anggriawan</option>
+                <option class="krp-field" value="Dimas Kurnia Pamungkas">Dimas Kurnia Pamungkas</option>
+                <option class="krp-field" value="Dody Friadi">Dody Friady</option>
+                <option class="krp-field" value="Edo Irfan Nugraha">Edo Irfan Nugraha</option>
+                <option class="krp-field" value="Eggi Fradana">Eggi Fradana</option>
+                <option class="krp-field" value="Gusef Riadi">Gusef Riadi</option>
+                <option class="krp-field" value="Hafid">Hafid</option>
+                <option class="krp-field" value="Hamdani">Hamdani</option>
+                <option class="krp-field" value="Hari Bowo">Hari Bowo</option>
+                <option class="krp-field" value="Ilham Kholik">Ilham Kholik</option>
+                <option class="krp-field" value="Kodin">Kodin</option>
+                <option class="krp-field" value="Kuswara">Kuswara</option>
+                <option class="krp-field" value="Latif">Latif</option>
+                <option class="krp-field" value="Riko fristian">Riko fristian</option>
+                <option class="krp-field" value="Muhammad Rivaldi">Muhammad Rivaldi</option>
+                <option class="krp-field" value="Niko Nirwana">Niko Nirwana</option>
+                <option class="krp-field" value="Nur Fatonah">Nur Fatonah</option>
+                <option class="krp-field" value="Nurhidayattullah">Nurhidayattullah</option>
+                <option class="krp-field" value="Oki">Oki</option>
+                <option class="krp-field" value="Primulyadi">Primulyadi</option>
+                <option class="krp-field" value="Rahmat Syukur Pratama">Rahmat Syukur Pratama</option>
+                <option class="krp-field" value="Ravi Anggara">Ravi Anggara</option>
+                <option class="krp-field" value="Restu Satrio">Restu Satrio</option>
+                <option class="krp-field" value="Reza Kurniadi">Reza Kurniadi</option>
+                <option class="krp-field" value="Said Ahmad Taufik">Said Ahmad Taufik</option>
+                <option class="krp-field" value="Sandro">Sandro</option>
+                <option class="krp-field" value="Suryadi">Jaswadi</option>
+                <option class="krp-field" value="Taufik Hidayat">Taufik Hidayat</option>
+                <option class="krp-field" value="Trisnanto">Trisnanto</option>
+                <option class="krp-field" value="Usman Deva">Usman Deva</option>
+                <option class="krp-field" value="Wahyu Ilham">Wahyu Ilham</option>
+                <option class="krp-field" value="Wilfridus Krisna Priadika">Wilfridus Krisna Priadika</option>
+                <option class="krp-field" value="Audi muhar sakti">Audi muhar sakti</option>
+                <option class="krp-field" value="Andika saputra">Andika saputra</option>
+
+                <!-- ================= KRP Zona ================= -->
+
+                <option class="krp-zona" value="Aris Saputra">Aris Saputra</option>
+                <option class="krp-zona" value="Ade Lutfi">Ade Lutfi</option>
+                <option class="krp-zona" value="Adi Subroto">Adi Subroto</option>
+                <option class="krp-zona" value="Ardiansyah">Ardiansyah</option>
+                <option class="krp-zona" value="Dedi Kurniawan">Dedi Kurniawan</option>
+                <option class="krp-zona" value="Edi Nofrizal">Edi Nofrizal</option>
+                <option class="krp-zona" value="Febri Yenita Pratama">Febri Yenita Pratama</option>
+                <option class="krp-zona" value="Hendra Saputra">Hendra Saputra</option>
+                <option class="krp-zona" value="Iman Surya Priyatna">Iman Surya Priyatna</option>
+                <option class="krp-zona" value="Irwanto">Irwanto</option>
+                <option class="krp-zona" value="Junianto">Junianto</option>
+                <option class="krp-zona" value="Madelian Herianto">Madelian Herianto</option>
+                <option class="krp-zona" value="M Ridwan">M Ridwan</option>
+                <option class="krp-zona" value="M Hafiz">M Hafiz</option>
+                <option class="krp-zona" value="May Yudi Supratman">May Yudi Supratman</option>
+                <option class="krp-zona" value="Rendy Septirianto">Rendy Septirianto</option>
+                <option class="krp-zona" value="Rizkho Fadjar Mulyawan">Rizkho Fadjar Mulyawan</option>
+                <option class="krp-zona" value="Satri Mulyanak S">Satri Mulyanak S</option>
+                <option class="krp-zona" value="Satria Ariansyah">Satria Ariansyah</option>
+                <option class="krp-zona" value="Suyadi">Suyadi</option>
+                <option class="krp-zona" value="Syafarudin">Syafarudin</option>
+                <option class="krp-zona" value="Tri Darsa Saputra">Tri Darsa Saputra</option>
+
+              </select>
+
+            </div>
+
+            <div class="form-group">
+
+              <label for="tanggal">
+                Tanggal:
+              </label>
+
+              <input type="date" id="tanggal" required onchange="updateDay()">
+
+            </div>
+
+            <div class="form-group">
+
+              <label for="hari">
+                Hari:
+              </label>
+
+              <select id="hari" required>
+
+                <option value="Senin">Senin</option>
+                <option value="Selasa">Selasa</option>
+                <option value="Rabu">Rabu</option>
+                <option value="Kamis">Kamis</option>
+                <option value="Jumat">Jumat</option>
+                <option value="Sabtu">Sabtu</option>
+                <option value="Minggu">Minggu</option>
+
+              </select>
+
+            </div>
+
+            <div class="form-group">
+
+              <label>Status Libur:</label>
+
+              <div class="libur-box">
+                <input type="checkbox" id="liburKhusus">
+              </div>
+
+            </div>
+            <div class="form-group">
+
+              <label for="jamKerja">
+                Jam Kerja:
+              </label>
+
+              <input type="number" id="jamKerja" min="1" max="24" required>
+
+            </div>
+
+          </div>
+
+          <!-- ================= SESSION ================= -->
+
+          <div class="form-row">
+
+            <div class="form-group">
+              <label for="jamLembur">Jam Lembur:</label>
+              <input type="number" id="jamLembur" required>
+            </div>
+
+            <div class="form-group">
+              <label for="jamAwal1">Jam Awal Sesi 1:</label>
+              <input type="time" id="jamAwal1">
+            </div>
+
+            <div class="form-group">
+              <label for="jamAkhir1">Jam Akhir Sesi 1:</label>
+              <input type="time" id="jamAkhir1">
+            </div>
+
+          </div>
+
+          <div class="form-row">
+
+            <div class="form-group">
+              <label for="jamAwal2">Jam Awal Sesi 2:</label>
+              <input type="time" id="jamAwal2">
+            </div>
+
+            <div class="form-group">
+              <label for="jamAkhir2">Jam Akhir Sesi 2:</label>
+              <input type="time" id="jamAkhir2">
+            </div>
+
+            <div class="form-group">
+              <label for="jamAwal3">Jam Awal Sesi 3:</label>
+              <input type="time" id="jamAwal3">
+            </div>
+
+          </div>
+
+          <div class="form-row">
+
+            <div class="form-group">
+              <label for="jamAkhir3">Jam Akhir Sesi 3:</label>
+              <input type="time" id="jamAkhir3">
+            </div>
+
+            <div class="form-group">
+              <label for="jamAwal4">Jam Awal Sesi 4:</label>
+              <input type="time" id="jamAwal4">
+            </div>
+
+            <div class="form-group">
+              <label for="jamAkhir4">Jam Akhir Sesi 4:</label>
+              <input type="time" id="jamAkhir4">
+            </div>
+
+          </div>
+
+          <!-- ================= HASIL ================= -->
+
+          <div class="form-row">
+
+            <div class="form-group">
+
+              <label>
+                Hasil Perhitungan:
+              </label>
+
+              <div id="hasil" class="hasil-box">
+                Total Lembur: 0 jam
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- ================= KETERANGAN ================= -->
+
+          <div class="form-row">
+
+            <div class="form-group">
+
+              <label for="note">
+                Keterangan:
+              </label>
+
+              <input type="text" id="note">
+
+            </div>
+
+          </div>
+
+          <!-- ================= BUTTON ================= -->
+
+          <button class="btn-hitung" onclick="hitungLembur()">
+            Submit
+          </button>
+
+          <button class="btn-reset" onclick="resetForm()">
+            Reset Form
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- ================= DINAS LUAR ================= -->
+
+      <div id="dinasLuarSection" style="display:none;">
+
+        <div class="form-container">
+
+          <h3 style="color:white;">
+            Form Dinas Luar Driver
+          </h3>
+
+          <div class="form-row">
+
+            <div class="form-group">
+
+              <label>Nama Driver</label>
+
+              <select id="dlNamaDriver">
+
+                <option value="" disabled selected>
+                  Nama Driver
+                </option>
+                <!-- ================= KRP FIELD ================= -->
+
+                <option class="krp-field" value="Aang Septiansyah">Aang Septiansyah</option>
+                <option class="krp-field" value="Ade Trio Saputra">Ade Trio Saputra</option>
+                <option class="krp-field" value="Ahmad Safii">Ahmad Safii</option>
+                <option class="krp-field" value="Andi Susilo">Andi Susilo</option>
+                <option class="krp-field" value="Andrian Abel Pratama">Andrian Abel Pratama</option>
+                <option class="krp-field" value="Bayu Hermansyah">Bayu Hermansyah</option>
+                <option class="krp-field" value="Cristiandi Saputra">Cristiandi Saputra</option>
+                <option class="krp-field" value="Deden krishna">Deden krishna</option>
+                <option class="krp-field" value="Dedi Kurniawan.">Dedi Kurniawan.</option>
+                <option class="krp-field" value="Dimas Anggriawan">Dimas Anggriawan</option>
+                <option class="krp-field" value="Dimas Kurnia Pamungkas">Dimas Kurnia Pamungkas</option>
+                <option class="krp-field" value="Dody Friadi">Dody Friady</option>
+                <option class="krp-field" value="Edo Irfan Nugraha">Edo Irfan Nugraha</option>
+                <option class="krp-field" value="Eggi Fradana">Eggi Fradana</option>
+                <option class="krp-field" value="Gusef Riadi">Gusef Riadi</option>
+                <option class="krp-field" value="Hafid">Hafid</option>
+                <option class="krp-field" value="Hamdani">Hamdani</option>
+                <option class="krp-field" value="Hari Bowo">Hari Bowo</option>
+                <option class="krp-field" value="Ilham Kholik">Ilham Kholik</option>
+                <option class="krp-field" value="Kodin">Kodin</option>
+                <option class="krp-field" value="Kuswara">Kuswara</option>
+                <option class="krp-field" value="Latif">Latif</option>
+                <option class="krp-field" value="Riko fristian">Riko fristian</option>
+                <option class="krp-field" value="Muhammad Rivaldi">Muhammad Rivaldi</option>
+                <option class="krp-field" value="Niko Nirwana">Niko Nirwana</option>
+                <option class="krp-field" value="Nur Fatonah">Nur Fatonah</option>
+                <option class="krp-field" value="Nurhidayattullah">Nurhidayattullah</option>
+                <option class="krp-field" value="Oki">Oki</option>
+                <option class="krp-field" value="Primulyadi">Primulyadi</option>
+                <option class="krp-field" value="Rahmat Syukur Pratama">Rahmat Syukur Pratama</option>
+                <option class="krp-field" value="Ravi Anggara">Ravi Anggara</option>
+                <option class="krp-field" value="Restu Satrio">Restu Satrio</option>
+                <option class="krp-field" value="Reza Kurniadi">Reza Kurniadi</option>
+                <option class="krp-field" value="Said Ahmad Taufik">Said Ahmad Taufik</option>
+                <option class="krp-field" value="Sandro">Sandro</option>
+                <option class="krp-field" value="Suryadi">Jaswadi</option>
+                <option class="krp-field" value="Taufik Hidayat">Taufik Hidayat</option>
+                <option class="krp-field" value="Trisnanto">Trisnanto</option>
+                <option class="krp-field" value="Usman Deva">Usman Deva</option>
+                <option class="krp-field" value="Wahyu Ilham">Wahyu Ilham</option>
+                <option class="krp-field" value="Wilfridus Krisna Priadika">Wilfridus Krisna Priadika</option>
+                <option class="krp-field" value="Audi muhar sakti">Audi muhar sakti</option>
+                <option class="krp-field" value="Andika saputra">Andika saputra</option>
+                <!-- ================= KRP Zona ================= -->
+
+                <option class="krp-zona" value="Aris Saputra">Aris Saputra</option>
+                <option class="krp-zona" value="Ade Lutfi">Ade Lutfi</option>
+                <option class="krp-zona" value="Adi Subroto">Adi Subroto</option>
+                <option class="krp-zona" value="Ardiansyah">Ardiansyah</option>
+                <option class="krp-zona" value="Dedi Kurniawan">Dedi Kurniawan</option>
+                <option class="krp-zona" value="Edi Nofrizal">Edi Nofrizal</option>
+                <option class="krp-zona" value="Febri Yenita Pratama">Febri Yenita Pratama</option>
+                <option class="krp-zona" value="Hendra Saputra">Hendra Saputra</option>
+                <option class="krp-zona" value="Iman Surya Priyatna">Iman Surya Priyatna</option>
+                <option class="krp-zona" value="Irwanto">Irwanto</option>
+                <option class="krp-zona" value="Junianto">Junianto</option>
+                <option class="krp-zona" value="Madelian Herianto">Madelian Herianto</option>
+                <option class="krp-zona" value="M Ridwan">M Ridwan</option>
+                <option class="krp-zona" value="M Hafiz">M Hafiz</option>
+                <option class="krp-zona" value="May Yudi Supratman">May Yudi Supratman</option>
+                <option class="krp-zona" value="Rendy Septirianto">Rendy Septirianto</option>
+                <option class="krp-zona" value="Rizkho Fadjar Mulyawan">Rizkho Fadjar Mulyawan</option>
+                <option class="krp-zona" value="Satri Mulyanak S">Satri Mulyanak S</option>
+                <option class="krp-zona" value="Satria Ariansyah">Satria Ariansyah</option>
+                <option class="krp-zona" value="Suyadi">Suyadi</option>
+                <option class="krp-zona" value="Syafarudin">Syafarudin</option>
+                <option class="krp-zona" value="Tri Darsa Saputra">Tri Darsa Saputra</option>
+
+              </select>
+
+            </div>
+
+            <div class="form-group">
+
+              <label>Tanggal</label>
+
+              <input type="date" id="dlTanggal" onchange="updateHariDinas()">
+
+            </div>
+
+            <div class="form-group">
+
+              <label>Hari</label>
+
+              <input type="text" id="dlHari" readonly>
+
+            </div>
+
+          </div>
+
+          <div class="form-row">
+
+            <div class="form-group" style="width:100%;">
+
+              <label>Tujuan Dinas Luar</label>
+
+              <input type="text" id="dlTujuan" placeholder="">
+
+            </div>
+
+          </div>
+
+          <div class="button-group">
+
+            <button class="btn-dinas" onclick="submitDinasLuar()">
+              Submit Dinas Luar
+            </button>
+
+            <button class="btn-reset-dinas" onclick="resetDinasLuar()">
+              Reset Form
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+      <!-- ================= REPORT TABLE ================= -->
+
+      <div id="reportSection" style="display:none; margin-top:30px;">
+
+        <div class="report-container">
+
+          <h3 class="report-title">
+            Daily Overtime Report
+          </h3>
+
+          <!-- ================= WRAPPER ================= -->
+
+          <div class="filter-container">
+
+            <!-- ================= FILTER DRIVER ================= -->
+
+            <div class="filter-group">
+
+              <label>Nama Driver</label>
+
+              <input type="text" id="filterDriver" placeholder="Cari driver...">
+
+            </div>
+
+            <!-- ================= FILTER TANGGAL ================= -->
+
+            <div class="filter-group">
+
+              <label>Dari Tanggal</label>
+
+              <input type="date" id="filterStartDate">
+
+            </div>
+
+            <div class="filter-group">
+
+              <label>Sampai Tanggal</label>
+
+              <input type="date" id="filterEndDate">
+
+            </div>
+
+            <!-- ================= BUTTON ================= -->
+
+            <button onclick="filterTanggal()" class="filter-btn">
+
+              Filter
+
+            </button>
+
+            <button onclick="loadReport()" class="reset-btn">
+
+              Reset
+
+            </button>
+
+            <!-- ================= DOWNLOAD EXCEL ================= -->
+
+            <button onclick="downloadReportExcel()" class="excel-btn">
+
+              Download Excel
+
+            </button>
+
+          </div>
+
+          <!-- ================= TABLE ================= -->
+
+          <div class="table-wrapper">
+
+            <table id="reportTable">
+
+              <thead>
+
+                <tr>
+
+                  <th>Nama Driver</th>
+                  <th>Tanggal</th>
+                  <th>Hari</th>
+                  <th>Jam Kerja</th>
+                  <th>Jam Lembur</th>
+                  <th>Hasil Lembur</th>
+                  <th>Jam Awal 1</th>
+                  <th>Jam Akhir 1</th>
+                  <th>Jam Awal 2</th>
+                  <th>Jam Akhir 2</th>
+                  <th>Jam Awal 3</th>
+                  <th>Jam Akhir 3</th>
+                  <th>Jam Awal 4</th>
+                  <th>Jam Akhir 4</th>
+                  <th>Jam Pertama</th>
+                  <th>Jam Kedua</th>
+                  <th>Jam Ketiga</th>
+                  <th>Jam Keempat</th>
+                  <th>Keterangan</th>
+                  <th>Action</th>
+
+                </tr>
+
+              </thead>
+
+              <!-- 🔹 ID tbody wajib ada -->
+
+              <tbody id="reportTableBody">
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ================= EXCEL JS ================= -->
+
+      <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+
+      <script src="https://cdn.jsdelivr.net/npm/file-saver/dist/FileSaver.min.js"></script>
+
+      <!-- ================= MONTHLY REPORT ================= -->
+
+      <div id="monthlyReportSection" style="display:none; margin-top:30px;">
+
+        <div class="report-container">
+
+          <h3 class="report-title">
+            Monthly Overtime Report
+          </h3>
+
+          <!-- ================= FILTER ================= -->
+
+          <div class="filter-container">
+
+            <!-- ================= TANGGAL AWAL ================= -->
+
+            <div class="filter-group">
+
+              <label>Dari Tanggal</label>
+
+              <input type="date" id="monthlyStartDate">
+
+            </div>
+
+            <!-- ================= TANGGAL AKHIR ================= -->
+
+            <div class="filter-group">
+
+              <label>Sampai Tanggal</label>
+
+              <input type="date" id="monthlyEndDate">
+
+            </div>
+
+            <!-- ================= BUTTON FILTER ================= -->
+
+            <button onclick="filterMonthlyReport()" class="filter-btn">
+
+              Filter
+
+            </button>
+
+            <!-- ================= RESET ================= -->
+
+            <button onclick="loadMonthlyReport()" class="reset-btn">
+
+              Reset
+
+            </button>
+
+            <!-- ================= DOWNLOAD ================= -->
+
+            <button onclick="downloadMonthlyExcel()" class="excel-btn">
+
+              Download Monthly Excel
+
+            </button>
+
+          </div>
+
+          <!-- ================= TABLE ================= -->
+
+          <div class="table-wrapper">
+
+            <table id="monthlyReportTable">
+
+              <thead>
+
+                <tr>
+
+                  <th>Nama Driver</th>
+                  <th>Total Jam Kerja</th>
+                  <th>Total Jam Lembur</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody id="monthlyReportBody">
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ================= DRIVER MATRIX REPORT ================= -->
+
+      <div id="driverMatrixSection" style="display:none; margin-top:30px;">
+
+        <div class="report-container">
+
+          <h3 class="report-title">
+            Driver Attendance & Overtime Table
+          </h3>
+
+          <div class="filter-container">
+
+            <div class="filter-group">
+              <label>Dari Tanggal</label>
+              <input type="date" id="matrixStartDate">
+            </div>
+
+            <div class="filter-group">
+              <label>Sampai Tanggal</label>
+              <input type="date" id="matrixEndDate">
+            </div>
+
+            <button class="filter-btn" onclick="generateDriverMatrix()">
+              Generate Report
+            </button>
+
+            <button class="excel-btn" onclick="downloadDriverMatrixExcel()">
+              Download Excel
+            </button>
+
+          </div>
+
+          <div class="table-wrapper">
+
+            <table id="driverMatrixTable">
+
+              <thead>
+
+                <tr id="matrixMonthHeader">
+
+                  <th rowspan="3">NO</th>
+                  <th rowspan="3">NO PEGAWAI</th>
+                  <th rowspan="3">NAMA PENGEMUDI</th>
+                  <th rowspan="3">RINCIAN</th>
+                  <th rowspan="3">FLEET CODE</th>
+                  <th rowspan="3">LOKASI</th>
+
+                </tr>
+
+                <tr id="matrixDateHeader">
+                </tr>
+
+                <tr id="matrixDayHeader">
+                </tr>
+
+              </thead>
+              <tbody id="driverMatrixBody">
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+      <!-- ================= CHART SECTION ================= -->
+
+      <div id="chartSection" style="display:none; margin-top:30px;">
+
+        <div class="report-container">
+
+          <h3 class="report-title">
+            Overtime Chart
+          </h3>
+
+          <div class="chart-wrapper">
+
+            <div class="chart-filter">
+
+              <label>Dari</label>
+              <input type="date" id="chartStartDate">
+
+              <label>Sampai</label>
+              <input type="date" id="chartEndDate">
+
+              <button onclick="filterOvertimeChart()">
+                Filter
+              </button>
+
+              <button onclick="loadCurrentMonthChart()">
+                Bulan Berjalan
+              </button>
+
+              <select id="departmentFilter" onchange="filterDepartmentChart()">
+                <option value="all">Semua Departement</option>
+                <option value="Produksi">Produksi</option>
+                <option value="RAM">RAM</option>
+                <option value="WOWS">WOWS</option>
+                <option value="Pool / GS">Pool / GS</option>
+                <option value="HSE">HSE</option>
+                <option value="Field Manager">Field Manager</option>
+              </select>
+            </div>
+
+            <canvas id="overtimeLineChart"></canvas>
+
+          </div>
+
+        </div>
+
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+      <!-- ================= DRIVER CHART SECTION ================= -->
+
+      <div id="driverChartSection" style="display:none; margin-top:30px;">
+
+        <div class="report-container">
+
+          <h3 class="report-title">
+            Driver Overtime Chart
+          </h3>
+
+          <!-- ================= DROPDOWN DRIVER ================= -->
+
+          <div class="driver-header">
+
+            <div class="driver-select-box">
+              <select id="driverSelect" onchange="loadDriverPhoto(); generateDriverChart();">
+
+                <!-- ================= KRP FIELD ================= -->
+
+                <option class="krp-field" value="Aang Septiansyah">Aang Septiansyah</option>
+                <option class="krp-field" value="Ade Trio Saputra">Ade Trio Saputra</option>
+                <option class="krp-field" value="Ahmad Safii">Ahmad Safii</option>
+                <option class="krp-field" value="Andi Susilo">Andi Susilo</option>
+                <option class="krp-field" value="Andrian Abel Pratama">Andrian Abel Pratama</option>
+                <option class="krp-field" value="Bayu Hermansyah">Bayu Hermansyah</option>
+                <option class="krp-field" value="Cristiandi Saputra">Cristiandi Saputra</option>
+                <option class="krp-field" value="Deden krishna">Deden krishna</option>
+                <option class="krp-field" value="Dedi Kurniawan.">Dedi Kurniawan.</option>
+                <option class="krp-field" value="Dimas Anggriawan">Dimas Anggriawan</option>
+                <option class="krp-field" value="Dimas Kurnia Pamungkas">Dimas Kurnia Pamungkas</option>
+                <option class="krp-field" value="Dody Friady">Dody Friady</option>
+                <option class="krp-field" value="Edo Irfan Nugraha">Edo Irfan Nugraha</option>
+                <option class="krp-field" value="Eggi Fradana">Eggi Fradana</option>
+                <option class="krp-field" value="Gusef Riadi">Gusef Riadi</option>
+                <option class="krp-field" value="Hafid">Hafid</option>
+                <option class="krp-field" value="Hamdani">Hamdani</option>
+                <option class="krp-field" value="Hari Bowo">Hari Bowo</option>
+                <option class="krp-field" value="Ilham Kholik">Ilham Kholik</option>
+                <option class="krp-field" value="Kodin">Kodin</option>
+                <option class="krp-field" value="Kuswara">Kuswara</option>
+                <option class="krp-field" value="Latif">Latif</option>
+                <option class="krp-field" value="Riko fristian">Riko fristian</option>
+                <option class="krp-field" value="Muhammad Rivaldi">Muhammad Rivaldi</option>
+                <option class="krp-field" value="Niko Nirwana">Niko Nirwana</option>
+                <option class="krp-field" value="Nur Fatonah">Nur Fatonah</option>
+                <option class="krp-field" value="Nurhidayattullah">Nurhidayattullah</option>
+                <option class="krp-field" value="Oki">Oki</option>
+                <option class="krp-field" value="Primulyadi">Primulyadi</option>
+                <option class="krp-field" value="Rahmat Syukur Pratama">Rahmat Syukur Pratama</option>
+                <option class="krp-field" value="Ravi Anggara">Ravi Anggara</option>
+                <option class="krp-field" value="Restu Satrio">Restu Satrio</option>
+                <option class="krp-field" value="Reza Kurniadi">Reza Kurniadi</option>
+                <option class="krp-field" value="Said Ahmad Taufik">Said Ahmad Taufik</option>
+                <option class="krp-field" value="Sandro">Sandro</option>
+                <option class="krp-field" value="Suryadi">Jaswadi</option>
+                <option class="krp-field" value="Taufik Hidayat">Taufik Hidayat</option>
+                <option class="krp-field" value="Trisnanto">Trisnanto</option>
+                <option class="krp-field" value="Usman Deva">Usman Deva</option>
+                <option class="krp-field" value="Wahyu Ilham">Wahyu Ilham</option>
+                <option class="krp-field" value="Wilfridus Krisna Priadika">Wilfridus Krisna Priadika</option>
+                <option class="krp-field" value="Audi muhar sakti">Audi muhar sakti</option>
+                <option class="krp-field" value="Andika saputra">Andika saputra</option>
+                <!-- ================= KRP Zona ================= -->
+
+                <option class="krp-zona" value="Aris Saputra">Aris Saputra</option>
+                <option class="krp-zona" value="Ade Lutfi">Ade Lutfi</option>
+                <option class="krp-zona" value="Adi Subroto">Adi Subroto</option>
+                <option class="krp-zona" value="Ardiansyah">Ardiansyah</option>
+                <option class="krp-zona" value="Dedi Kurniawan">Dedi Kurniawan</option>
+                <option class="krp-zona" value="Edi Nofrizal">Edi Nofrizal</option>
+                <option class="krp-zona" value="Febri Yenita Pratama">Febri Yenita Pratama</option>
+                <option class="krp-zona" value="Hendra Saputra">Hendra Saputra</option>
+                <option class="krp-zona" value="Iman Surya Priyatna">Iman Surya Priyatna</option>
+                <option class="krp-zona" value="Irwanto">Irwanto</option>
+                <option class="krp-zona" value="Junianto">Junianto</option>
+                <option class="krp-zona" value="Madelian Herianto">Madelian Herianto</option>
+                <option class="krp-zona" value="M Ridwan">M Ridwan</option>
+                <option class="krp-zona" value="M Hafiz">M Hafiz</option>
+                <option class="krp-zona" value="May Yudi Supratman">May Yudi Supratman</option>
+                <option class="krp-zona" value="Rendy Septirianto">Rendy Septirianto</option>
+                <option class="krp-zona" value="Rizkho Fadjar Mulyawan">Rizkho Fadjar Mulyawan</option>
+                <option class="krp-zona" value="Satri Mulyanak S">Satri Mulyanak S</option>
+                <option class="krp-zona" value="Satria Ariansyah">Satria Ariansyah</option>
+                <option class="krp-zona" value="Suyadi">Suyadi</option>
+                <option class="krp-zona" value="Syafarudin">Syafarudin</option>
+                <option class="krp-zona" value="Tri Darsa Saputra">Tri Darsa Saputra</option>
+
+              </select>
+
+            </div>
+
+            <div class="driver-profile-card">
+
+              <img id="driverPhoto" src="https://i.postimg.cc/NMRDPgT5/GS-dispacer.jpg" alt="Driver Photo">
+
+              <div id="driverPhotoName">
+                Pilih Driver
+              </div>
+
+            </div>
+
+          </div>
+          <!-- ================= CHART ================= -->
+
+          <div class="chart-wrapper">
+
+            <div class="driver-chart-filter">
+
+              <label>Dari</label>
+              <input type="date" id="driverChartStartDate">
+
+              <label>Sampai</label>
+              <input type="date" id="driverChartEndDate">
+
+              <button onclick="filterdriverChart()">
+                Filter
+              </button>
+
+            </div>
+
+            <canvas id="driverChart"></canvas>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= REPORT DINAS LUAR ================= -->
+
+      <div id="reportDinasLuarSection" style="display:none; margin-top:30px;">
+
+        <div class="report-container">
+
+          <h3 class="report-title">
+            Report Dinas Luar
+          </h3>
+
+          <!-- FILTER REPORT DINAS LUAR -->
+
+          <div class="report-filter">
+
+            <div class="filter-group">
+              <label>Nama Driver</label>
+              <select id="filterDinasDriver">
+                <option value="">Semua Driver</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label>Tanggal Awal</label>
+              <input type="date" id="filterDinasStart">
+            </div>
+
+            <div class="filter-group">
+              <label>Tanggal Akhir</label>
+              <input type="date" id="filterDinasEnd">
+            </div>
+
+            <button class="btn-dinas" onclick="filterReportDinasLuar()">
+              Filter
+            </button>
+
+            <button class="btn-reset-dinas" onclick="resetFilterDinasLuar()">
+              Reset
+            </button>
+
+          </div>
+
+          <div class="section">
+
+            <div class="table-wrapper">
+
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>Nama Driver</th>
+                    <th>Tanggal</th>
+                    <th>Hari</th>
+                    <th>Tujuan</th>
+                  </tr>
+                </thead>
+
+                <tbody id="reportDinasLuarBody">
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ================= PEKERJAAN DRIVER ================= -->
+
+      <div id="pekerjaanDriverSection" style="display:none;">
+
+        <div class="form-container">
+
+          <h3 style="color:white;">
+            Form Surat Tugas Jalan
+          </h3>
+
+          <input type="hidden" id="jobRowNumber">
+
+          <!-- ================= IDENTITAS DRIVER ================= -->
+
+          <div class="driver-form-grid">
+
+            <!-- 1. FOTO DRIVER -->
+            <div class="driver-photo-section">
+
+              <label>Foto Driver</label>
+
+              <div class="driver-photo-box">
+                <img id="jobDriverPhoto" src="https://i.postimg.cc/NMRDPgT5/GS-dispacer.jpg" alt="Foto Driver">
+              </div>
+
+            </div>
+
+            <!-- 2. NAMA DRIVER -->
+            <div class="form-group">
+              <label for="jobNamaDriver">Nama Driver</label>
+              <select id="jobNamaDriver">
+                <option value="" disabled selected>Pilih Driver</option>
+              </select>
+            </div>
+
+            <!-- 3. NO BADGE -->
+            <div class="form-group">
+              <label for="jobBadge">No Badge</label>
+              <input type="text" id="jobBadge" readonly placeholder="No Badge Otomatis">
+            </div>
+
+            <!-- 4. FLEET CODE -->
+            <div class="form-group">
+              <label for="jobFleetCode">Fleet Code</label>
+              <input type="text" id="jobFleetCode" readonly placeholder="Fleet Code Otomatis">
+            </div>
+
+            <!-- 4A. JENIS KENDARAAN -->
+            <div class="form-group">
+              <label for="jobVehicleType">Jenis Kendaraan</label>
+              <input type="text" id="jobVehicleType" readonly placeholder="Jenis Kendaraan Otomatis">
+
+            </div>
+
+            <div class="form-group driver-contact-group">
+              <label>Driver contact</label>
+              <input id="drivercontact">
+            </div>
+
+            <!-- 5. DEPARTMENT -->
+            <div class="form-group">
+              <label for="jobDepartment">Department</label>
+              <input type="text" id="jobDepartment" readonly placeholder="Department Otomatis">
+            </div>
+
+            <!-- 6. STATUS JABATAN -->
+            <div class="form-group">
+              <label>Status Jabatan</label>
+              <input type="text" id="jobStatusJabatan" readonly placeholder="Status Jabatan Otomatis">
+            </div>
+
+            <!-- 7. TANGGAL PERMINTAAN -->
+            <div class="form-group">
+              <label>Tanggal Permintaan User</label>
+              <input type="date" id="jobTanggal">
+            </div>
+
+            <!-- 8. TANGGAL PEKERJAAN -->
+            <div class="form-group">
+              <label>Tanggal Pekerjaan</label>
+              <input type="date" id="jobTanggalPekerjaan">
+            </div>
+
+            <!-- 9. JAM MULAI -->
+            <div class="form-group">
+              <label>Jam Mulai</label>
+              <input type="time" id="jobJamMulai">
+            </div>
+
+            <!-- 10. JAM SELESAI -->
+            <div class="form-group jam-selesai-group">
+              <label>Jam Selesai</label>
+              <input type="time" id="jobJamSelesai">
+            </div>
+
+            <div class="form-group pemberi-job-group">
+              <label>Dispatcher</label>
+              <input id="jobInputBy" readonly>
+            </div>
+
+            <div class="form-group peminta-job-group">
+              <label>Peminta Pekerjaan</label>
+              <input id="jobPeminta">
+            </div>
+
+            <!-- FUNGSI -->
+            <div class="form-group fungsi-job-group">
+              <label>Fungsi</label>
+              <input id="jobFungsi">
+            </div>
+
+            <div class="form-group tanggal-akhir-group">
+              <label>Tanggal Akhir Pekerjaan</label>
+              <input id="jobTanggalAkhir" type="date">
+            </div>
+
+            <!-- SUMMARY (SPAN 3 KOLOM) -->
+            <div class="form-group summary-group">
+              <label>Summary Pekerjaan</label>
+              <textarea id="jobSummary" placeholder="Masukkan ringkasan pekerjaan driver..."></textarea>
+            </div>
+
+            <!-- BUTTON (SPAN 3 KOLOM) -->
+            <div class="button-group">
+              <button class="btn-dinas" onclick="submitPekerjaanDriver()">Submit</button>
+              <button class="btn-reset-dinas" onclick="resetPekerjaanDriver()">Reset</button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= REPORT STJ ================= -->
+
+      <div id="reportSTJSection" style="display:none;">
+
+        <div class="report-container">
+
+          <h3>Report Surat Tugas Jalan (STJ)</h3>
+
+          <div class="report-toolbar">
+            <button class="btn-export-stj" onclick="downloadSTJExcel()">
+              Export Excel
+            </button>
+
+            <button class="btn-kesediaankendaraan-stj" onclick="kesediaankendaraanSTJData()">
+             Status kendaraan
+            </button>
+
+            <input type="text" id="searchSTJ" placeholder="Cari Driver / Badge / Fleet..." onkeyup="filterSTJ()">
+          </div>
+
+          <div class="table-wrapper">
+
+            <table id="stjTable">
+
+              <thead>
+                <tr>
+                  <th>Nama</th>
+                  <th>No Badge</th>
+                  <th>Fleet Code</th>
+                  <th>Jenis Kendaraan</th>
+                  <th>Driver contact</th>
+                  <th>Tanggal Permintaan</th>
+                  <th>Department</th>
+                  <th>Status Jabatan</th>
+                  <th>Tanggal Awal Pekerjaan</th>
+                  <th>Jam Awal Pekerjaan</th>
+                  <th>Jam Akhir Pekerjaan</th>
+                  <th>Pemberi Pekerjaan</th>
+                  <th>Peminta Pekerjaan</th>
+                  <th>Fungsi</th>
+                  <th>Tanggal Akhir Pekerjaan</th>
+                  <th>Summary Pekerjaan</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+
+              <tbody id="stjTableBody">
+              </tbody>
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ================= STATUS KENDARAAN ================= -->
+
+      <!-- ================= MODAL KENDARAAN ================= -->
+
+      <div id="kendaraanModal" class="modal-kendaraan">
+
+        <div class="modal-kendaraan-content">
+
+          <div class="modal-header">
+
+            <h2>Status Kesediaan Kendaraan</h2>
+
+            <span class="close-kendaraan" onclick="closeKendaraanModal()">
+              &times;
+            </span>
+
+          </div>
+
+          <div id="kendaraanList"></div>
+
+        </div>
+
+      </div>
+
+      <!-- ================= MODAL STJ ================= -->
+
+      <div id="stjModal" class="stj-modal">
+
+        <div class="stj-modal-content">
+
+          <span class="close-stj" onclick="closeSTJModal()">
+            &times;
+          </span>
+
+          <div id="stjPreview"></div>
+
+        </div>
+
+      </div>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</body>
+
+</html>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>
