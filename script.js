@@ -10,14 +10,12 @@ const users = {
     password: "gito2026",
     role: "admin" // bisa buka semua
   },
-  
-  
+
   "suharso@pertamina.com": {
     password: "acok2026",
     role: "admin" // bisa buka semua
   },
-  
-  
+
   "dian@devimandiri.com": {
     password: "Dian2025",
     role: "admin" // bisa buka semua
@@ -596,24 +594,24 @@ function hitungJamKerja() {
   let totalJamLembur = 0;
 
   function hitungDurasi(start, end) {
-  if (!start || !end) return 0;
+    if (!start || !end) return 0;
 
-  let startTime = new Date(`1970-01-01T${start}:00`);
-  let endTime;
+    let startTime = new Date(`1970-01-01T${start}:00`);
+    let endTime;
 
-  // Anggap 23:59 sebagai 24:00
-  if (end === "23:59") {
-    endTime = new Date("1970-01-02T00:00:00");
-  } else {
-    endTime = new Date(`1970-01-01T${end}:00`);
+    // Anggap 23:59 sebagai 24:00
+    if (end === "23:59") {
+      endTime = new Date("1970-01-02T00:00:00");
+    } else {
+      endTime = new Date(`1970-01-01T${end}:00`);
+    }
+
+    if (endTime < startTime) {
+      endTime.setDate(endTime.getDate() + 1);
+    }
+
+    return (endTime - startTime) / (1000 * 60 * 60);
   }
-
-  if (endTime < startTime) {
-    endTime.setDate(endTime.getDate() + 1);
-  }
-
-  return (endTime - startTime) / (1000 * 60 * 60);
-}
   let sesiLembur1 = hitungDurasi(jamAwal1, jamAkhir1);
   let sesiLembur2 = hitungDurasi(jamAwal2, jamAkhir2);
   let sesiLembur3 = hitungDurasi(jamAwal3, jamAkhir3);
@@ -727,29 +725,29 @@ function hitungLembur() {
   // Tampilkan alert untuk penyimpanan yang berhasil
   alert("Laporan berhasil disimpan!");
 
- function calculateSessionOvertime(jamAwal, jamAkhir) {
-  if (!jamAwal || !jamAkhir) return 0;
+  function calculateSessionOvertime(jamAwal, jamAkhir) {
+    if (!jamAwal || !jamAkhir) return 0;
 
-  const start = new Date(`1970-01-01T${jamAwal}:00`);
+    const start = new Date(`1970-01-01T${jamAwal}:00`);
 
-  let end;
+    let end;
 
-  // Jika 23:59 dianggap 24:00
-  if (jamAkhir === "23:59") {
-    end = new Date("1970-01-02T00:00:00");
-  } else {
-    end = new Date(`1970-01-01T${jamAkhir}:00`);
+    // Jika 23:59 dianggap 24:00
+    if (jamAkhir === "23:59") {
+      end = new Date("1970-01-02T00:00:00");
+    } else {
+      end = new Date(`1970-01-01T${jamAkhir}:00`);
+    }
+
+    // Jika melewati tengah malam
+    if (end < start) {
+      end.setDate(end.getDate() + 1);
+    }
+
+    const diff = (end - start) / (1000 * 60 * 60);
+
+    return diff > 0 ? diff : 0;
   }
-
-  // Jika melewati tengah malam
-  if (end < start) {
-    end.setDate(end.getDate() + 1);
-  }
-
-  const diff = (end - start) / (1000 * 60 * 60);
-
-  return diff > 0 ? diff : 0;
-}
 
   function calculateOvertime(hari, jamKerja, jamLembur, liburKhusus = false) {
     let totalLembur = 0;
@@ -990,12 +988,9 @@ function resetFilterDinasLuar() {
 /* ================= LOAD REPORT ================= */
 
 function loadReport() {
+  const role = localStorage.getItem("userRole") || "admin";
 
-  const role =
-    localStorage.getItem("userRole") || "admin";
-
-  const isUserAdmin =
-    localStorage.getItem("userRole") === "admin";
+  const isUserAdmin = localStorage.getItem("userRole") === "admin";
 
   console.log("ROLE:", role);
 
@@ -1015,7 +1010,7 @@ function loadReport() {
 
       tbody.innerHTML = "";
 
-       data.forEach((item) => {
+      data.forEach((item) => {
         const row = item.data;
 
         const rowNumber = item.rowNumber;
@@ -1025,10 +1020,10 @@ function loadReport() {
         if (row[20] === "Approved") {
           tr.classList.add("approved-row");
         }
-         
-         if (item.color === "#ff0000") {
-  tr.classList.add("edited-row");
-}
+
+        if (item.color === "#ff0000") {
+          tr.classList.add("edited-row");
+        }
         /* ================= FORMAT TANGGAL ================= */
 
         let tanggal = "";
@@ -1089,7 +1084,9 @@ function loadReport() {
     🗑 Hapus
   </button>
 
-  ${isUserAdmin ? `
+  ${
+    isUserAdmin
+      ? `
 
     <button
       class="edit-btn"
@@ -1103,7 +1100,9 @@ function loadReport() {
       ✔ Approve
     </button>
 
-  ` : ""}
+  `
+      : ""
+  }
 
 </td>
 
@@ -1142,9 +1141,7 @@ function deleteReport(rowNumber) {
 }
 
 function approvalReport(rowNumber) {
-
-  const isUserAdmin =
-    localStorage.getItem("userRole") === "admin";
+  const isUserAdmin = localStorage.getItem("userRole") === "admin";
 
   if (!isUserAdmin) {
     alert("Hanya admin yang dapat melakukan approval");
@@ -1165,23 +1162,21 @@ function approvalReport(rowNumber) {
       })
     }
   )
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      alert("Data berhasil di approve");
-      loadReport();
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Gagal approve data");
-  });
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        alert("Data berhasil di approve");
+        loadReport();
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("Gagal approve data");
+    });
 }
 
 function editReport(rowNumber) {
-
-  const isUserAdmin =
-    localStorage.getItem("userRole") === "admin";
+  const isUserAdmin = localStorage.getItem("userRole") === "admin";
 
   if (!isUserAdmin) {
     alert("Hanya admin yang dapat mengedit data");
@@ -1197,7 +1192,6 @@ function editReport(rowNumber) {
   const tds = tr.querySelectorAll("td");
 
   for (let i = 0; i < tds.length - 1; i++) {
-
     const value = tds[i].innerText;
 
     tds[i].innerHTML = `
@@ -1218,213 +1212,165 @@ function editReport(rowNumber) {
 }
 
 function fixTimeFormat(time) {
-if (!time) return "";
-return String(time).replace(".", ":");
+  if (!time) return "";
+  return String(time).replace(".", ":");
 }
 
 function calculateSessionOvertime(jamAwal, jamAkhir) {
+  if (!jamAwal || !jamAkhir) return 0;
 
-if (!jamAwal || !jamAkhir) return 0;
+  jamAwal = fixTimeFormat(jamAwal);
+  jamAkhir = fixTimeFormat(jamAkhir);
 
-jamAwal = fixTimeFormat(jamAwal);
-jamAkhir = fixTimeFormat(jamAkhir);
+  const start = new Date(`1970-01-01T${jamAwal}:00`);
+  const end = new Date(`1970-01-01T${jamAkhir}:00`);
 
-const start = new Date(`1970-01-01T${jamAwal}:00`);
-const end = new Date(`1970-01-01T${jamAkhir}:00`);
+  if (isNaN(start) || isNaN(end)) return 0;
 
-if (isNaN(start) || isNaN(end)) return 0;
+  let diff = (end - start) / (1000 * 60 * 60);
 
-let diff = (end - start) / (1000 * 60 * 60);
-
-return diff > 0 ? diff : 0;
+  return diff > 0 ? diff : 0;
 }
 
-function calculateOvertime(
-hari,
-jamKerja,
-jamLembur,
-liburKhusus = false
-) {
+function calculateOvertime(hari, jamKerja, jamLembur, liburKhusus = false) {
+  let totalLembur = 0;
 
-let totalLembur = 0;
+  const isHariLibur = hari === "Sabtu" || hari === "Minggu" || liburKhusus;
 
-const isHariLibur =
-hari === "Sabtu" ||
-hari === "Minggu" ||
-liburKhusus;
+  if (isHariLibur) {
+    if (jamLembur <= 8) {
+      totalLembur = jamLembur * 2;
+    } else {
+      totalLembur = 8 * 2;
 
-if (isHariLibur) {
+      let sisaJam = jamLembur - 8;
 
-if (jamLembur <= 8) {
+      if (sisaJam >= 1) {
+        totalLembur += 3;
+        sisaJam--;
+      }
 
-  totalLembur = jamLembur * 2;
+      if (sisaJam >= 1) {
+        totalLembur += 4;
+        sisaJam--;
+      }
 
-} else {
+      if (sisaJam > 0) {
+        totalLembur += sisaJam * 4;
+      }
+    }
+  } else {
+    if (jamLembur >= 1) {
+      totalLembur += 1.5;
+      jamLembur--;
+    }
 
-  totalLembur = 8 * 2;
-
-  let sisaJam = jamLembur - 8;
-
-  if (sisaJam >= 1) {
-    totalLembur += 3;
-    sisaJam--;
+    if (jamLembur > 0) {
+      totalLembur += jamLembur * 2;
+    }
   }
 
-  if (sisaJam >= 1) {
-    totalLembur += 4;
-    sisaJam--;
-  }
-
-  if (sisaJam > 0) {
-    totalLembur += sisaJam * 4;
-  }
-
-}
-
-} else {
-
-if (jamLembur >= 1) {
-  totalLembur += 1.5;
-  jamLembur--;
-}
-
-if (jamLembur > 0) {
-  totalLembur += jamLembur * 2;
-}
-
-}
-
-return totalLembur;
+  return totalLembur;
 }
 
 function saveReport(rowNumber, btn) {
-  
-  const isUserAdmin =
-    localStorage.getItem("userRole") === "admin";
+  const isUserAdmin = localStorage.getItem("userRole") === "admin";
 
   if (!isUserAdmin) {
     alert("Hanya admin yang dapat menyimpan perubahan");
     return;
   }
 
+  const tr = btn.closest("tr");
+  const inputs = tr.querySelectorAll("input");
 
-const tr = btn.closest("tr");
-const inputs = tr.querySelectorAll("input");
+  const values = Array.from(inputs).map((input) => input.value);
 
-const values = Array.from(inputs).map(input => input.value);
+  const hari = values[2];
 
-const hari = values[2];
+  const jamPertama = calculateSessionOvertime(values[6], values[7]);
 
-const jamPertama =
-calculateSessionOvertime(values[6], values[7]);
+  const jamKedua = calculateSessionOvertime(values[8], values[9]);
 
-const jamKedua =
-calculateSessionOvertime(values[8], values[9]);
+  const jamKetiga = calculateSessionOvertime(values[10], values[11]);
 
-const jamKetiga =
-calculateSessionOvertime(values[10], values[11]);
+  const jamKeempat = calculateSessionOvertime(values[12], values[13]);
 
-const jamKeempat =
-calculateSessionOvertime(values[12], values[13]);
+  const totalJamLembur = jamPertama + jamKedua + jamKetiga + jamKeempat;
 
-const totalJamLembur =
-jamPertama +
-jamKedua +
-jamKetiga +
-jamKeempat;
+  const totalJamKerja = 8 + totalJamLembur;
 
-const totalJamKerja =
-8 + totalJamLembur;
+  const hasilLembur = calculateOvertime(
+    hari,
+    totalJamKerja,
+    totalJamLembur,
+    false
+  );
 
-const hasilLembur =
-calculateOvertime(
-hari,
-totalJamKerja,
-totalJamLembur,
-false
-);
+  values[3] = totalJamKerja;
+  values[4] = totalJamLembur;
+  values[5] = hasilLembur;
 
-values[3] = totalJamKerja;
-values[4] = totalJamLembur;
-values[5] = hasilLembur;
+  values[14] = jamPertama;
+  values[15] = jamKedua;
+  values[16] = jamKetiga;
+  values[17] = jamKeempat;
 
-values[14] = jamPertama;
-values[15] = jamKedua;
-values[16] = jamKetiga;
-values[17] = jamKeempat;
+  fetch(
+    "https://script.google.com/macros/s/AKfycbytyecx9KV5KOwEdIQT5758jJquiFfHFbYcTDVEe9Qz_acNhMxCMEcA6tCfW9Gk-JZfQQ/exec",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        action: "edit",
+        rowNumber: rowNumber,
+        values: values
+      })
+    }
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        tr.classList.add("edited-row");
 
-fetch(
-"https://script.google.com/macros/s/AKfycbytyecx9KV5KOwEdIQT5758jJquiFfHFbYcTDVEe9Qz_acNhMxCMEcA6tCfW9Gk-JZfQQ/exec",
-{
-method: "POST",
-body: JSON.stringify({
-action: "edit",
-rowNumber: rowNumber,
-values: values
-})
-}
-)
-.then(res => res.json())
-.then(data => {
+        alert("Data berhasil diupdate");
 
-if (data.success) {
+        setTimeout(() => {
+          loadReport();
+        }, 1000);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
 
-  tr.classList.add("edited-row");
-
-  alert("Data berhasil diupdate");
-
-  setTimeout(() => {
-    loadReport();
-  }, 1000);
-
-}
-
-})
-.catch(err => {
-
-console.error(err);
-
-alert("Gagal update data");
-
-});
-
+      alert("Gagal update data");
+    });
 }
 /* ================= FILTER TANGGAL ================= */
 
 function filterTanggal() {
+  const filterDriver = document
+    .getElementById("filterDriver")
+    .value.toLowerCase();
 
-  const filterDriver =
-    document
-      .getElementById("filterDriver")
-      .value
-      .toLowerCase();
+  const dari = document.getElementById("filterStartDate").value;
 
-  const dari =
-    document.getElementById("filterStartDate").value;
+  const sampai = document.getElementById("filterEndDate").value;
 
-  const sampai =
-    document.getElementById("filterEndDate").value;
+  const role = localStorage.getItem("userRole") || "admin";
 
-  const role =
-    localStorage.getItem("userRole") || "admin";
-
-  const isUserAdmin =
-    role === "admin";
+  const isUserAdmin = role === "admin";
 
   fetch(
     `https://script.google.com/macros/s/AKfycbytyecx9KV5KOwEdIQT5758jJquiFfHFbYcTDVEe9Qz_acNhMxCMEcA6tCfW9Gk-JZfQQ/exec?action=readWithRow&role=${role}`
   )
-    .then(response => response.json())
+    .then((response) => response.json())
 
-    .then(data => {
-
-      const tbody =
-        document.querySelector("#reportTable tbody");
+    .then((data) => {
+      const tbody = document.querySelector("#reportTable tbody");
 
       tbody.innerHTML = "";
 
-      data.forEach(item => {
-
+      data.forEach((item) => {
         const row = item.data;
         const rowNumber = item.rowNumber;
 
@@ -1433,51 +1379,35 @@ function filterTanggal() {
         let tanggalFormat = "";
 
         if (row[1]) {
-
           if (typeof row[1] === "string") {
             tanggalFormat = row[1].split("T")[0];
           } else {
-            tanggalFormat =
-              new Date(row[1])
-                .toISOString()
-                .split("T")[0];
+            tanggalFormat = new Date(row[1]).toISOString().split("T")[0];
           }
-
         }
 
         /* ================= FILTER DRIVER ================= */
 
-        const namaDriver =
-          (row[0] || "").toLowerCase();
+        const namaDriver = (row[0] || "").toLowerCase();
 
-        if (
-          filterDriver &&
-          !namaDriver.includes(filterDriver)
-        ) {
+        if (filterDriver && !namaDriver.includes(filterDriver)) {
           return;
         }
 
         /* ================= FILTER TANGGAL ================= */
 
         if (dari && !sampai) {
-
           if (tanggalFormat !== dari) {
             return;
           }
-
         }
 
         /* ================= FILTER RANGE ================= */
 
         if (dari && sampai) {
-
-          if (
-            tanggalFormat < dari ||
-            tanggalFormat > sampai
-          ) {
+          if (tanggalFormat < dari || tanggalFormat > sampai) {
             return;
           }
-
         }
 
         /* ================= FORMAT TANGGAL ================= */
@@ -1485,59 +1415,37 @@ function filterTanggal() {
         let tanggal = "";
 
         if (tanggalFormat) {
+          const parts = tanggalFormat.split("-");
 
-          const parts =
-            tanggalFormat.split("-");
-
-          tanggal =
-            `${parts[2]}/${parts[1]}/${parts[0]}`;
-
+          tanggal = `${parts[2]}/${parts[1]}/${parts[0]}`;
         }
 
         /* ================= FORMAT JAM ================= */
 
         function formatJam(jamData) {
-
           if (!jamData) return "";
 
           try {
-
-            const jam =
-              new Date(jamData);
+            const jam = new Date(jamData);
 
             if (!isNaN(jam)) {
-
-              return jam.toLocaleTimeString(
-                "id-ID",
-                {
-                  hour: "2-digit",
-                  minute: "2-digit"
-                }
-              );
-
+              return jam.toLocaleTimeString("id-ID", {
+                hour: "2-digit",
+                minute: "2-digit"
+              });
             }
-
           } catch (e) {}
 
-          if (
-            typeof jamData === "string" &&
-            jamData.includes("T")
-          ) {
-
-            return jamData
-              .split("T")[1]
-              .substring(0, 5);
-
+          if (typeof jamData === "string" && jamData.includes("T")) {
+            return jamData.split("T")[1].substring(0, 5);
           }
 
           return jamData;
-
         }
 
         /* ================= BUAT ROW ================= */
 
-        let tr =
-          document.createElement("tr");
+        let tr = document.createElement("tr");
 
         /* ================= WARNA APPROVED ================= */
 
@@ -1587,7 +1495,9 @@ function filterTanggal() {
               🗑 Hapus
             </button>
 
-            ${isUserAdmin ? `
+            ${
+              isUserAdmin
+                ? `
 
               <button
                 class="edit-btn"
@@ -1601,25 +1511,21 @@ function filterTanggal() {
                 ✔ Approve
               </button>
 
-            ` : ""}
+            `
+                : ""
+            }
 
           </td>
 
         `;
 
         tbody.appendChild(tr);
-
       });
-
     })
 
-    .catch(error => {
-      console.error(
-        "Gagal filter report:",
-        error
-      );
+    .catch((error) => {
+      console.error("Gagal filter report:", error);
     });
-
 }
 /* =========================================================
    DOWNLOAD REPORT EXCEL
@@ -3962,11 +3868,9 @@ document
   });
 
 async function submitPekerjaanDriver() {
-
   const rowNumber = document.getElementById("jobRowNumber").value;
 
   const data = {
-
     action: rowNumber ? "edit" : "add",
 
     rowNumber: rowNumber,
@@ -4004,13 +3908,11 @@ async function submitPekerjaanDriver() {
     summaryPekerjaan: document.getElementById("jobSummary").value,
 
     status: "Open"
-
   };
 
   console.log(data);
 
   try {
-
     await fetch(
       "https://script.google.com/macros/s/AKfycbwNb9HlH8Xa5chSINIUb7Ti1OjA_4PoAqJ5p3u6qbTbbe-w39JIlPgK-J6QnRreFvUwdA/exec",
       {
@@ -4021,9 +3923,7 @@ async function submitPekerjaanDriver() {
     );
 
     alert(
-      rowNumber
-        ? "Data STJ berhasil diupdate"
-        : "Data STJ berhasil ditambahkan"
+      rowNumber ? "Data STJ berhasil diupdate" : "Data STJ berhasil ditambahkan"
     );
 
     document.getElementById("jobRowNumber").value = "";
@@ -4034,24 +3934,17 @@ async function submitPekerjaanDriver() {
 
     // Beri waktu Apps Script menyimpan data
     setTimeout(async () => {
-
       await loadReportSTJ();
 
       await checkSTJNotification();
-
     }, 500);
-
   } catch (error) {
-
     console.error(error);
 
     alert("Terjadi kesalahan : " + error.message);
-
   }
-
 }
 function resetPekerjaanDriver() {
-
   document.getElementById("jobNamaDriver").selectedIndex = 0;
 
   document.getElementById("jobBadge").value = "";
@@ -4074,7 +3967,6 @@ function resetPekerjaanDriver() {
   document.getElementById("jobPeminta").value = "";
   document.getElementById("jobFungsi").value = "";
   document.getElementById("jobSummary").value = "";
-
 }
 
 function loadInputByUser() {
@@ -4107,11 +3999,9 @@ let isLoadingSTJ = false;
 // ====================== FETCH DENGAN RETRY ======================
 
 async function fetchWithRetry(url, maxRetries = 5) {
-
   let delay = 1000;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
-
     const controller = new AbortController();
 
     const timeout = setTimeout(() => {
@@ -4119,7 +4009,6 @@ async function fetchWithRetry(url, maxRetries = 5) {
     }, 20000);
 
     try {
-
       const response = await fetch(url, {
         method: "GET",
         cache: "no-store",
@@ -4137,21 +4026,16 @@ async function fetchWithRetry(url, maxRetries = 5) {
       const data = JSON.parse(text);
 
       return data;
-
     } catch (err) {
-
       clearTimeout(timeout);
 
-      console.warn(
-        `Fetch gagal (${attempt}/${maxRetries})`,
-        err.message
-      );
+      console.warn(`Fetch gagal (${attempt}/${maxRetries})`, err.message);
 
       if (attempt === maxRetries) {
         throw err;
       }
 
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
 
       delay *= 2;
     }
@@ -4161,7 +4045,6 @@ async function fetchWithRetry(url, maxRetries = 5) {
 // ====================== LOAD REPORT ======================
 
 async function loadReportSTJ() {
-
   if (isLoadingSTJ) return;
 
   isLoadingSTJ = true;
@@ -4169,15 +4052,13 @@ async function loadReportSTJ() {
   const tbody = document.getElementById("stjTableBody");
 
   if (lastDataHash === "") {
-    tbody.innerHTML =
-      "<tr><td colspan='18'>Loading...</td></tr>";
+    tbody.innerHTML = "<tr><td colspan='18'>Loading...</td></tr>";
   }
 
   try {
-
     const data = await fetchWithRetry(
       "https://script.google.com/macros/s/AKfycbwNb9HlH8Xa5chSINIUb7Ti1OjA_4PoAqJ5p3u6qbTbbe-w39JIlPgK-J6QnRreFvUwdA/exec?t=" +
-      Date.now()
+        Date.now()
     );
 
     if (!Array.isArray(data)) {
@@ -4197,7 +4078,6 @@ async function loadReportSTJ() {
     let html = "";
 
     data.forEach((item, index) => {
-
       html += `
 
 <tr
@@ -4211,7 +4091,38 @@ color:${item.isClosed ? "#ff0000" : "#000"};
 <td>${item.noBadge || ""}</td>
 <td>${item.fleetCode || ""}</td>
 <td>${item.jenisKendaraan || ""}</td>
-<td>${item.driverContact || ""}</td>
+<td>
+${(() => {
+  const hpDriver = item.driverContact || "";
+
+  const match = hpDriver.match(/(?:\+62|62|0)8\d[\d\s-]{7,}/);
+
+  if (!match) return hpDriver;
+
+  let hp = match[0].replace(/\D/g, "");
+
+  // Ubah ke format WhatsApp
+  if (hp.startsWith("0")) {
+    hp = "62" + hp.substring(1);
+  } else if (!hp.startsWith("62")) {
+    hp = "62" + hp;
+  }
+
+  return `
+<a
+    href="https://wa.me/${hp}"
+    target="whatsapp"
+    onclick="event.stopPropagation();"
+    style="
+        color:#25D366;
+        text-decoration:none;
+        font-weight:bold;
+    ">
+    ${match[0]}
+</a>
+`;
+})()}
+</td>
 <td>${item.tanggalPermintaan || ""}</td>
 <td>${item.department || ""}</td>
 <td>${item.statusJabatan || ""}</td>
@@ -4219,7 +4130,41 @@ color:${item.isClosed ? "#ff0000" : "#000"};
 <td>${item.jamAwalPekerjaan || ""}</td>
 <td>${item.jamAkhirPekerjaan || ""}</td>
 <td>${item.pemberiPekerjaan || ""}</td>
-<td>${item.pemintaPekerjaan || ""}</td>
+<td>
+${(() => {
+  const pemohon = item.pemintaPekerjaan || "";
+
+  // Cari nomor HP
+  const match = pemohon.match(/(?:\+62|62|0)8\d[\d\s-]{7,}/);
+
+  if (!match) return pemohon;
+
+  let hp = match[0].replace(/\D/g, "");
+
+  // Ubah ke format WhatsApp
+  if (hp.startsWith("0")) {
+    hp = "62" + hp.substring(1);
+  } else if (!hp.startsWith("62")) {
+    hp = "62" + hp;
+  }
+
+  return `
+    ${pemohon.replace(match[0], "")}
+    <br>
+    <a
+      href="https://wa.me/${hp}"
+      target="_blank"
+      onclick="event.stopPropagation();"
+      style="
+        color:#25D366;
+        text-decoration:none;
+        font-weight:bold;
+      ">
+      ${match[0]}
+    </a>
+  `;
+})()}
+</td>
 <td>${item.fungsi || ""}</td>
 <td>${item.tanggalAkhirPekerjaan || ""}</td>
 <td>${item.summaryPekerjaan || ""}</td>
@@ -4274,17 +4219,13 @@ Detail
 </tr>
 
 `;
-
     });
 
     tbody.innerHTML = html;
-
   } catch (error) {
-
     console.error("Load STJ gagal:", error);
 
     if (lastDataHash === "") {
-
       tbody.innerHTML = `
 <tr>
 <td colspan="18">
@@ -4292,15 +4233,10 @@ Gagal memuat data STJ
 </td>
 </tr>
 `;
-
     }
-
   } finally {
-
     isLoadingSTJ = false;
-
   }
-
 }
 
 // ====================== AUTO REFRESH ======================
@@ -4308,17 +4244,14 @@ Gagal memuat data STJ
 loadReportSTJ();
 
 setInterval(() => {
-
   if (!isLoadingSTJ) {
     loadReportSTJ();
   }
-
 }, 5000);
 
 // ====================== CONVERT DATE ======================
 
 function convertDate(dateStr) {
-
   if (!dateStr) return "";
 
   const parts = dateStr.split("/");
@@ -4326,11 +4259,9 @@ function convertDate(dateStr) {
   if (parts.length !== 3) return "";
 
   return `${parts[2]}-${parts[1]}-${parts[0]}`;
-
 }
 
 function openSTJ(index) {
-
   const item = stjData[index];
 
   // Dispatcher = user yang sedang login
@@ -4351,29 +4282,27 @@ function openSTJ(index) {
   document.getElementById("jobDepartment").value = item.department || "";
   document.getElementById("jobStatusJabatan").value = item.statusJabatan || "";
 
-  document.getElementById("jobTanggal").value =
-    convertDate(item.tanggalPermintaan);
+  document.getElementById("jobTanggal").value = convertDate(
+    item.tanggalPermintaan
+  );
 
-  document.getElementById("jobTanggalPekerjaan").value =
-    convertDate(item.tanggalAwalPekerjaan);
+  document.getElementById("jobTanggalPekerjaan").value = convertDate(
+    item.tanggalAwalPekerjaan
+  );
 
-  document.getElementById("jobTanggalAkhir").value =
-    convertDate(item.tanggalAkhirPekerjaan);
+  document.getElementById("jobTanggalAkhir").value = convertDate(
+    item.tanggalAkhirPekerjaan
+  );
 
-  document.getElementById("jobJamMulai").value =
-    item.jamAwalPekerjaan || "";
+  document.getElementById("jobJamMulai").value = item.jamAwalPekerjaan || "";
 
-  document.getElementById("jobJamSelesai").value =
-    item.jamAkhirPekerjaan || "";
+  document.getElementById("jobJamSelesai").value = item.jamAkhirPekerjaan || "";
 
-  document.getElementById("jobPeminta").value =
-    item.pemintaPekerjaan || "";
-  
-  document.getElementById("jobFungsi").value =
-  item.fungsi || "";
+  document.getElementById("jobPeminta").value = item.pemintaPekerjaan || "";
 
-  document.getElementById("jobSummary").value =
-    item.summaryPekerjaan || "";
+  document.getElementById("jobFungsi").value = item.fungsi || "";
+
+  document.getElementById("jobSummary").value = item.summaryPekerjaan || "";
 }
 
 async function detailSTJ(index) {
@@ -4537,7 +4466,7 @@ async function detailSTJ(index) {
 
 <tr>
 <td><b>Fungsi</b></td>
-<td>: ${item.fungsi  || ""}</td>
+<td>: ${item.fungsi || ""}</td>
 </tr>
 
 <tr>
@@ -4686,9 +4615,7 @@ style="
 }
 
 async function updateStatusSTJ(rowNumber, status, select) {
-
   try {
-
     await fetch(
       "https://script.google.com/macros/s/AKfycbwNb9HlH8Xa5chSINIUb7Ti1OjA_4PoAqJ5p3u6qbTbbe-w39JIlPgK-J6QnRreFvUwdA/exec",
       {
@@ -4711,27 +4638,19 @@ async function updateStatusSTJ(rowNumber, status, select) {
       status === "Kendaraan Full Job" ||
       status === "User Mengcancel"
     ) {
-
       tr.style.color = "#ff0000";
-
     } else {
-
       tr.style.color = "#000000";
-
     }
 
     checkSTJNotification();
 
     console.log("Status berhasil diubah");
-
-  } catch(err){
-
+  } catch (err) {
     console.error(err);
 
     alert("Gagal mengubah status");
-
   }
-
 }
 async function downloadSTJTableAsExcel(bodyTableId, filename) {
   /* ================= LOADER ================= */
@@ -4965,9 +4884,7 @@ function downloadSTJPDF() {
 }
 
 async function checkSTJNotification() {
-
   try {
-
     const response = await fetch(
       "https://script.google.com/macros/s/AKfycbwNb9HlH8Xa5chSINIUb7Ti1OjA_4PoAqJ5p3u6qbTbbe-w39JIlPgK-J6QnRreFvUwdA/exec"
     );
@@ -4978,182 +4895,182 @@ async function checkSTJNotification() {
 
     const notif = document.getElementById("stjNotif");
 
-    const open = data.filter(item =>
-      String(item.status).trim().toLowerCase() === "pending"
+    const open = data.filter(
+      (item) => String(item.status).trim().toLowerCase() === "pending"
     );
 
     console.log("Jumlah Open :", open.length);
 
     if (open.length > 0) {
-
       notif.style.display = "inline-block";
       notif.innerHTML = open.length;
-
     } else {
-
       notif.style.display = "none";
-
     }
-
   } catch (err) {
-
     console.error(err);
-
   }
-
 }
 checkSTJNotification();
 
 setInterval(checkSTJNotification, 2000);
 
 const daftarKendaraan = [
-
-"JBI-05 BH 8578 NA",
-"JBI-07 BH 8582 NA",
-"JBI-08 BH 8629 NA",
-"JBI-09 BH 8610 NA",
-"JBI-17 BH 8634 NA",
-"JBI-21 BH 8621 NA",
-"JBI-27 BH 8586 NA",
-"JBI-48 BH 8625 NA",
-"JBI-062 BH 8631 NA",
-"JBI-64 BH 8572 NA",
-"PSU-11 BK 1076 PZ",
-"PHR1-04 BH 1289 YR",
-"PHR1-17 BH 1271 YR",
-"PHR1-22 BH 7419 AI",
-"PHR1-23 BH 7420 AI"
+  "JBI-05 BH 8578 NA",
+  "JBI-07 BH 8582 NA",
+  "JBI-08 BH 8629 NA",
+  "JBI-09 BH 8610 NA",
+  "JBI-17 BH 8634 NA",
+  "JBI-21 BH 8621 NA",
+  "JBI-27 BH 8586 NA",
+  "JBI-48 BH 8625 NA",
+  "JBI-062 BH 8631 NA",
+  "JBI-64 BH 8572 NA",
+  "PSU-11 BK 1076 PZ",
+  "PHR1-04 BH 1289 YR",
+  "PHR1-17 BH 1271 YR",
+  "PHR1-22 BH 7419 AI",
+  "PHR1-23 BH 7420 AI"
 ];
 
 function kesediaankendaraanSTJData() {
+  const modal = document.getElementById("kendaraanModal");
+  const list = document.getElementById("kendaraanList");
 
-    const modal = document.getElementById("kendaraanModal");
+  list.innerHTML = "";
 
-    const list = document.getElementById("kendaraanList");
+  const rows = document.querySelectorAll("#stjTableBody tr");
 
-    list.innerHTML = "";
+  const kendaraanAktif = [];
 
-    const rows = document.querySelectorAll("#stjTableBody tr");
+  const statusOnJob = [
+    "open",
+    "kendaraan full job",
+    "on job",
+    "progress",
+    "running"
+  ];
 
-    const kendaraanAktif = [];
+  // ===========================
+  // TANGGAL HARI INI
+  // ===========================
+  const sekarang = new Date();
 
-    // Status yang dianggap kendaraan sedang digunakan
-    const statusOnJob = [
-        "open",
-        "kendaraan full job",
-        "on job",
-        "progress",
-        "running"
-    ];
+  const tanggalUpdate = [
+    String(sekarang.getDate()).padStart(2, "0"),
+    String(sekarang.getMonth() + 1).padStart(2, "0"),
+    sekarang.getFullYear()
+  ].join("-");
 
-    rows.forEach(row => {
+  // ===========================
+  // CEK KENDARAAN ON JOB
+  // ===========================
+  rows.forEach((row) => {
+    if (row.cells.length < 17) return;
 
-        if (row.cells.length < 17) return;
+    const fleet = row.cells[2].innerText.trim();
 
-        const fleet = row.cells[2].innerText.trim();
+    const selectStatus = row.cells[16].querySelector(".status-select");
 
-        // Ambil value yang sedang dipilih pada dropdown
-        const selectStatus = row.cells[16].querySelector(".status-select");
+    const status = selectStatus ? selectStatus.value.trim().toLowerCase() : "";
 
-        const status = selectStatus
-            ? selectStatus.value.trim().toLowerCase()
-            : "";
+    if (statusOnJob.includes(status)) {
+      if (!kendaraanAktif.includes(fleet)) {
+        kendaraanAktif.push(fleet);
+      }
+    }
+  });
 
-        console.log("Fleet :", fleet);
-        console.log("Status:", status);
+  // ===========================
+  // TAMPILKAN DAFTAR KENDARAAN
+  // ===========================
+  list.innerHTML = `
+<div class="kendaraan-header">
+    <div>No Lambung</div>
+    <div style="text-align:center">Update</div>
+    <div style="text-align:right;padding-right:55px;">Status</div>
+</div>
+`;
 
-        if (statusOnJob.includes(status)) {
+  daftarKendaraan.forEach((kendaraan) => {
+    const aktif = kendaraanAktif.includes(kendaraan);
 
-            if (!kendaraanAktif.includes(fleet)) {
-                kendaraanAktif.push(fleet);
-            }
+    list.innerHTML += `
 
-        }
+<div class="kendaraan-item">
 
-    });
+    <div class="fleet-col">
+        ${kendaraan}
+    </div>
 
-    daftarKendaraan.forEach(kendaraan => {
+    <div class="tanggal-col">
+        ${tanggalUpdate}
+    </div>
 
-        const aktif = kendaraanAktif.includes(kendaraan);
+    <div class="status ${aktif ? "status-on" : "status-standby"}">
 
-        list.innerHTML += `
+        <div class="dot ${aktif ? "onjob" : "standby"}"></div>
 
-        <div class="kendaraan-item">
+        ${aktif ? "On Job" : "Standby"}
 
-            <div class="nama-kendaraan">
+    </div>
 
-                ${kendaraan}
+</div>
 
-            </div>
+`;
+  });
 
-            <div class="status ${aktif ? "status-on" : "status-standby"}">
-
-                <div class="dot ${aktif ? "onjob" : "standby"}"></div>
-
-                ${aktif ? "On Job" : "Standby"}
-
-            </div>
-
-        </div>
-
-        `;
-
-    });
-
-    modal.style.display = "block";
-
+  modal.style.display = "block";
 }
 
 function parseTanggal(str) {
+  const p = str.split("/");
 
-    const p = str.split("/");
-
-    return new Date(
-
-        Number(p[2]),
-
-        Number(p[1]) - 1,
-
-        Number(p[0])
-
-    );
-
+  return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
 }
-
 // ================= TUTUP MODAL =================
 
 function closeKendaraanModal() {
-
-    document.getElementById("kendaraanModal").style.display = "none";
-
+  document.getElementById("kendaraanModal").style.display = "none";
 }
 
 function closeSTJModal() {
-
-    document.getElementById("stjModal").style.display = "none";
-
+  document.getElementById("stjModal").style.display = "none";
 }
 
 // ================= KLIK DI LUAR MODAL =================
 
-window.addEventListener("click", function(e){
+window.addEventListener("click", function (e) {
+  const kendaraanModal = document.getElementById("kendaraanModal");
 
-    const kendaraanModal = document.getElementById("kendaraanModal");
+  const stjModal = document.getElementById("stjModal");
 
-    const stjModal = document.getElementById("stjModal");
+  // Tutup modal kendaraan
+  if (e.target === kendaraanModal) {
+    closeKendaraanModal();
+  }
 
-    // Tutup modal kendaraan
-    if(e.target === kendaraanModal){
+  // Tutup modal STJ
+  if (e.target === stjModal) {
+    closeSTJModal();
+  }
+});
 
-        closeKendaraanModal();
+const btn = document.getElementById("sidebarToggle");
 
-    }
+if (localStorage.getItem("sidebar") === "hide") {
+  document.body.classList.add("sidebar-hide");
+  btn.innerHTML = "❯";
+}
 
-    // Tutup modal STJ
-    if(e.target === stjModal){
+btn.addEventListener("click", () => {
+  document.body.classList.toggle("sidebar-hide");
 
-        closeSTJModal();
-
-    }
-
+  if (document.body.classList.contains("sidebar-hide")) {
+    btn.innerHTML = "❯";
+    localStorage.setItem("sidebar", "hide");
+  } else {
+    btn.innerHTML = "❮";
+    localStorage.setItem("sidebar", "show");
+  }
 });
